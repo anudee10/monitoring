@@ -1,0 +1,19 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('pinging eks') {
+            steps {
+                sh "aws eks update-kubeconfig --region us-east-1 --name eks-demo-cluster"
+                sh '''
+                  kubectl create namespace monitoring
+                  kubectl apply -f deployment.yaml
+                  kubectl apply -f service.yaml
+                  kubectl apply -f configmap.yaml
+                  kubectl apply -f clusterRole.yaml
+                  kubectl get all
+                '''
+            }
+        }
+    }
+}
